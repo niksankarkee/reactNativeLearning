@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Button,
   StyleSheet,
@@ -6,10 +6,11 @@ import {
   TextInput,
   View,
   ScrollView,
-} from "react-native";
+  FlatList,
+} from 'react-native';
 
 export default function App() {
-  const [enteredGoalText, setEnteredGoalText] = useState("");
+  const [enteredGoalText, setEnteredGoalText] = useState('');
   const [courseGoals, setCourseGoals] = useState([]);
   const goalInputHandler = (enteredText) => {
     setEnteredGoalText(enteredText);
@@ -18,7 +19,7 @@ export default function App() {
   const addGoalHandler = () => {
     setCourseGoals((currentCourseGoals) => [
       ...currentCourseGoals,
-      enteredGoalText,
+      { text: enteredGoalText, id: Math.random().toString() },
     ]);
   };
 
@@ -33,13 +34,20 @@ export default function App() {
         <Button title='Add Goal' onPress={addGoalHandler} />
       </View>
       <View style={styles.goalsContainer}>
-        <ScrollView>
-          {courseGoals.map((courseGoal, idx) => (
-            <View style={styles.goalItem} key={idx}>
-              <Text style={styles.goalText}>{courseGoal}</Text>
-            </View>
-          ))}
-        </ScrollView>
+        <FlatList
+          data={courseGoals}
+          renderItem={(itemData) => {
+            return (
+              <View style={styles.goalItem}>
+                <Text style={styles.goalText}>{itemData.item.text}</Text>
+              </View>
+            );
+          }}
+          keyExtractor={(item, index) => {
+            return item.id;
+          }}
+          alwaysBounceVertical={false}
+        />
       </View>
     </View>
   );
@@ -53,17 +61,17 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 24,
     borderBottomWidth: 1,
-    borderBottomColor: "#cccccc",
+    borderBottomColor: '#cccccc',
   },
   textInput: {
     borderWidth: 1,
-    borderColor: "#cccccc",
-    width: "70%",
+    borderColor: '#cccccc',
+    width: '70%',
     marginRight: 8,
     padding: 8,
   },
@@ -74,9 +82,9 @@ const styles = StyleSheet.create({
     margin: 8,
     padding: 8,
     borderRadius: 6,
-    backgroundColor: "#5e0acc",
+    backgroundColor: '#5e0acc',
   },
   goalText: {
-    color: "white",
+    color: 'white',
   },
 });
